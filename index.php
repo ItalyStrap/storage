@@ -17,6 +17,11 @@ require __DIR__ . '/vendor/autoload.php';
  * @see \update_option()
  * @see \delete_option()
  *
+ * @see \get_theme_mod()
+ * @see \set_theme_mod()
+ * @see \update_theme_mod()
+ * @see \remove_theme_mod()
+ *
  * @see \get_site_option()
  * @see \add_site_option()
  * @see \update_site_option()
@@ -43,4 +48,8 @@ require __DIR__ . '/vendor/autoload.php';
  *
  * @see \wp_cache_replace()
  * @see \wp_cache_get_multiple()
+ * @see \wp_cache_set_multiple()
+ * @see \wp_cache_delete_multiple()
+ * @see \wp_cache_incr()
+ * @see \wp_cache_decr()
  */

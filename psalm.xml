@@ -35,6 +35,10 @@
                 <referencedFunction name="wp_cache_set_multiple"/>
                 <referencedFunction name="wp_cache_get_multiple"/>
                 <referencedFunction name="wp_cache_delete_multiple"/>
+                <referencedFunction name="get_theme_mod"/>
+                <referencedFunction name="set_theme_mod"/>
+                <referencedFunction name="remove_theme_mod"/>
+                <referencedFunction name="remove_theme_mods"/>
             </errorLevel>
         </UndefinedFunction>
     </issueHandlers>

@@ -117,6 +117,25 @@ class TestCase extends Unit
             }
             return $this->delete_transient_return;
         });
+
+        $this->defineFunction('get_theme_mod', function ($key, $default = false) {
+            return $this->store[ $key ] ?? $default;
+        });
+
+        $this->defineFunction('set_theme_mod', function ($key, $value) {
+            $this->store[ $key ] = $value;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('remove_theme_mod', function ($key) {
+            unset($this->store[ $key ]);
+            return $this->delete_transient_return;
+        });
+
+        $this->defineFunction('remove_theme_mods', function () {
+            $this->store = [];
+            return $this->delete_transient_return;
+        });
     }
 
 	// phpcs:ignore
@@ -138,6 +157,12 @@ class TestCase extends Unit
             'wp_cache_decr',
             'wp_cache_flush',
             'wp_cache_set_multiple',
+            'wp_cache_get_multiple',
+            'wp_cache_delete_multiple',
+            'get_theme_mod',
+            'set_theme_mod',
+            'remove_theme_mod',
+            'remove_theme_mods',
         ]);
         $this->store = [];
         $this->set_transient_return = true;
