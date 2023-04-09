@@ -55,6 +55,68 @@ class TestCase extends Unit
         $this->defineFunction('get_option', function ($key, $default = false) {
             return $this->store[ $key ] ?? $default;
         });
+
+        $this->defineFunction('wp_cache_get', function ($key, $group = '', $force = false, &$found = null) {
+            $found = isset($this->store[ $key ]);
+            return $this->store[ $key ] ?? false;
+        });
+
+        $this->defineFunction('wp_cache_set', function ($key, $data, $group = '', $expire = 0) {
+            $this->store[ $key ] = $data;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('wp_cache_delete', function ($key, $group = '') {
+            unset($this->store[ $key ]);
+            return $this->delete_transient_return;
+        });
+
+        $this->defineFunction('wp_cache_add', function ($key, $data, $group = '', $expire = 0) {
+            $this->store[ $key ] = $data;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('wp_cache_replace', function ($key, $data, $group = '', $expire = 0) {
+            $this->store[ $key ] = $data;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('wp_cache_incr', function ($key, $offset = 1, $group = '') {
+            $this->store[ $key ] += $offset;
+            return $this->store[ $key ];
+        });
+
+        $this->defineFunction('wp_cache_decr', function ($key, $offset = 1, $group = '') {
+            $this->store[ $key ] -= $offset;
+            return $this->store[ $key ];
+        });
+
+        $this->defineFunction('wp_cache_flush', function () {
+            $this->store = [];
+            return true;
+        });
+
+        $this->defineFunction('wp_cache_set_multiple', function ($keys, $group = '', $expire = 0) {
+            foreach ($keys as $key => $value) {
+                $this->store[ $key ] = $value;
+            }
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('wp_cache_get_multiple', function ($keys, $group = '', $force = false) {
+            $result = [];
+            foreach ($keys as $key) {
+                $result[ $key ] = $this->store[ $key ] ?? false;
+            }
+            return $result;
+        });
+
+        $this->defineFunction('wp_cache_delete_multiple', function ($keys, $group = '') {
+            foreach ($keys as $key) {
+                unset($this->store[ $key ]);
+            }
+            return $this->delete_transient_return;
+        });
     }
 
 	// phpcs:ignore
@@ -67,6 +129,15 @@ class TestCase extends Unit
             'update_option',
             'delete_option',
             'get_option',
+            'wp_cache_get',
+            'wp_cache_set',
+            'wp_cache_delete',
+            'wp_cache_add',
+            'wp_cache_replace',
+            'wp_cache_incr',
+            'wp_cache_decr',
+            'wp_cache_flush',
+            'wp_cache_set_multiple',
         ]);
         $this->store = [];
         $this->set_transient_return = true;
