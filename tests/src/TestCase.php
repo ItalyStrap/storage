@@ -36,6 +36,25 @@ class TestCase extends Unit
             unset($this->store[ $key ]);
             return $this->delete_transient_return;
         });
+
+        $this->defineFunction('add_option', function ($key, $value, $deprecated = '', $autoload = 'yes') {
+            $this->store[ $key ] = $value;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('update_option', function ($key, $value, $deprecated = '') {
+            $this->store[ $key ] = $value;
+            return $this->set_transient_return;
+        });
+
+        $this->defineFunction('delete_option', function ($key) {
+            unset($this->store[ $key ]);
+            return $this->delete_transient_return;
+        });
+
+        $this->defineFunction('get_option', function ($key, $default = false) {
+            return $this->store[ $key ] ?? $default;
+        });
     }
 
 	// phpcs:ignore
@@ -44,6 +63,10 @@ class TestCase extends Unit
             'get_transient',
             'set_transient',
             'delete_transient',
+            'add_option',
+            'update_option',
+            'delete_option',
+            'get_option',
         ]);
         $this->store = [];
         $this->set_transient_return = true;
