@@ -1,7 +1,7 @@
 name: Test Application
 
 env:
-  REPOSITORY_NAME: cache
+  REPOSITORY_NAME: storage
   PROJECT_KIND: plugins
   DB_HOST: localhost
   DB_NAME: test

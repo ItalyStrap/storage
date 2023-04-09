@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace ItalyStrap\Storage;
 
-trait SetCacheTrait
+trait SetMultipleStoreTrait
 {
     /**
      * @param $values
      * @param $ttl
      * @return bool
      */
-    public function setMultiple(iterable $values, ?int $ttl = null): bool
+    public function setMultiple(iterable $values): bool
     {
         /**
          * @var string $key
          * @var mixed $value
          */
         foreach ($values as $key => $value) {
-            if ($this->set($key, $value, $ttl)) {
+            if ($this->set($key, $value)) {
                 continue;
             }
             return false;

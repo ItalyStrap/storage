@@ -15,10 +15,10 @@ class TestCase extends Unit
      */
     protected $tester;
 
-    protected $store = [];
-    protected $set_transient_return = true;
-    protected $delete_transient_return = true;
-    protected $ttl = 0;
+    protected array $store = [];
+    protected bool $set_transient_return = true;
+    protected bool $delete_transient_return = true;
+    protected ?int $ttl = 0;
 
 	// phpcs:ignore
 	protected function _before() {

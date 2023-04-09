@@ -5,26 +5,14 @@ namespace ItalyStrap\Tests\Unit;
 
 use ItalyStrap\Storage\Transient;
 use ItalyStrap\Tests\TestCase;
+use ItalyStrap\Tests\TransientTestsTrait;
 
 class TransientTest extends TestCase
 {
-    // tests
+    use TransientTestsTrait;
+
     public function makeInstance(): Transient
     {
         return new Transient();
-    }
-
-    public function testInstanceOk(): void
-    {
-        $this->assertInstanceOf(Transient::class, $this->makeInstance());
-    }
-
-    /**
-     * @test
-     */
-    public function setTransient(): void
-    {
-        $this->makeInstance()->set('key', 'value');
-        $this->assertSame('value', \get_transient('key'), '');
     }
 }
