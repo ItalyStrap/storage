@@ -1,0 +1,10 @@
+## Composer
+/vendor/
+*.lock
+
+## WP Bowser
+*.local
+codeception.yml
+
+## Infection
+infection.json.dist
