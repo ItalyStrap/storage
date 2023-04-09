@@ -66,7 +66,7 @@ null === $option->get('option_2');
 
 use ItalyStrap\Storage\Mods;
 
-$mods = new Mods();
+$mods = new Mod();
 
 $mods->set('my_mod', 'my_value');
 
