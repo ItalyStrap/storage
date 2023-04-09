@@ -9,7 +9,7 @@ use ItalyStrap\Tests\WPTestCase;
 
 class TransientTest extends WPTestCase
 {
-//    use TransientTestsTrait;
+    use TransientTestsTrait;
 
     private function makeInstance(): Transient
     {
