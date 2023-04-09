@@ -2,9 +2,14 @@ name: CS - File lint and file validation
 
 on:
   push:
-    branches:
-      - master
   pull_request:
+    paths:
+      - '**.php'
+      - 'composer.*'
+      - 'phpcs.*'
+      - 'phpunit.*'
+      - 'psalm.*'
+
   workflow_dispatch:
 
 jobs:
