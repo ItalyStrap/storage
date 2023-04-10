@@ -1,6 +1,12 @@
 # ItalyStrap Storage API
 
 [![Test Application](https://github.com/ItalyStrap/storage/actions/workflows/test.yml/badge.svg)](https://github.com/ItalyStrap/storage/actions/workflows/test.yml)
+[![Latest Stable Version](https://img.shields.io/packagist/v/italystrap/storage.svg)](https://packagist.org/packages/italystrap/storage)
+[![Total Downloads](https://img.shields.io/packagist/dt/italystrap/storage.svg)](https://packagist.org/packages/italystrap/storage)
+[![Latest Unstable Version](https://img.shields.io/packagist/vpre/italystrap/storage.svg)](https://packagist.org/packages/italystrap/storage)
+[![License](https://img.shields.io/packagist/l/italystrap/storage.svg)](https://packagist.org/packages/italystrap/storage)
+![PHP from Packagist](https://img.shields.io/packagist/php-v/italystrap/storage)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FItalyStrap%2Fstorage%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/ItalyStrap/storage/master)
 
 Storage API for WordPress the OOP way
 
@@ -21,7 +27,31 @@ composer require italystrap/storage
 ```
 This package adheres to the [SemVer](http://semver.org/) specification and will be fully backward compatible between minor versions.
 
+## Introduction
+
+What is the purpose of this library?
+
+The first idea is to have a common API for all the storage system in WordPress, like Transients, Options, Mods, etc.
+
+In this case the Storage word is used to refer to some data stored in a DB table or in a file, also if you want in memory like array or object.
+
+With this library you can inject the storage system you need to use in your class instead of coupling your class to a specific storage system and simplify the testing of your class.
+
+This API takes some concept from the [PSR-16](https://www.php-fig.org/psr/psr-16/), and also it could be applied to other kind of storage system in WordPress not only for the Transients, Options, Mods, etc.
+
+To naming a few you can use this API for metadata, post meta, user meta, etc.
+
+If you need a PSR-6 or PSR-16 implementation for WordPress transient and cache you can use the [ItalyStrap\Cache](https://github.com/ItalyStrap/cache) package.
+
+Think of this like a wrapper around the WordPress Transients API, Options API, Mods API, etc. but with some differences.
+
+The most important difference is the return value of the `get()` method, in the WordPress Transients API, Cache API, Option API and so on the `get_*()` function return `false` if the result does not exist or has expired, in this API the `get()` method return `null` if the result does not exist or has expired.
+
+I'm not a fan of the `null` value but this adhere to the PSR-16 specification.
+
 ## Basic Usage
+
+Remember that the maximum length of the key is 172 characters, more characters will rise an Exception.
 
 ### Option API
 
@@ -96,9 +126,9 @@ $mods->deleteMultiple([
 
 null === $mods->get('mod_1');
 null === $mods->get('mod_2');
+
+$mods->clear();
 ```
-
-
 
 From [WordPress Transients API docs](https://codex.wordpress.org/Transients_API)
 

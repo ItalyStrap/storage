@@ -16,9 +16,21 @@ env:
 
 on:
   push:
-    branches:
-      - master
+    paths:
+      - '**.php'
+      - 'composer.*'
+      - 'phpcs.*'
+      - 'phpunit.*'
+      - 'psalm.*'
+
   pull_request:
+    paths:
+      - '**.php'
+      - 'composer.*'
+      - 'phpcs.*'
+      - 'phpunit.*'
+      - 'psalm.*'
+
   workflow_dispatch:
 
 jobs:
