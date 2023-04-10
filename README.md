@@ -62,11 +62,11 @@ $option = new Option();
 
 $option->set('my_option', 'my_value');
 
-'my_value' === $option->get('my_option');
+'my_value' === $option->get('my_option'); // true
 
 $option->delete('my_option');
 
-null === $option->get('my_option');
+null === $option->get('my_option'); // true
 
 $option->setMultiple([
     'option_1'	=> 'value_1',
@@ -76,18 +76,18 @@ $option->setMultiple([
 [
     'option_1'	=> 'value_1',
     'option_2'	=> 'value_2',
-] === $option->getMultiple( [
+] === $option->getMultiple([
     'option_1',
     'option_2',
-] );
+]); // true
 
-$option->deleteMultiple( [
+$option->deleteMultiple([
     'option_1',
     'option_2',
-] );
+]);
 
-null === $option->get('option_1');
-null === $option->get('option_2');
+null === $option->get('option_1'); // true
+null === $option->get('option_2'); // true
 ```
 
 ### Mods API
@@ -100,11 +100,11 @@ $mods = new Mod();
 
 $mods->set('my_mod', 'my_value');
 
-'my_value' === $mods->get('my_mod');
+'my_value' === $mods->get('my_mod'); // true
 
 $mods->delete('my_mod');
 
-null === $mods->get('my_mod');
+null === $mods->get('my_mod'); // true
 
 $mods->setMultiple([
     'mod_1'	=> 'value_1',
@@ -117,15 +117,15 @@ $mods->setMultiple([
 ] === $mods->getMultiple([
     'mod_1',
     'mod_2',
-]);
+]); // true
 
 $mods->deleteMultiple([
     'mod_1',
     'mod_2',
 ]);
 
-null === $mods->get('mod_1');
-null === $mods->get('mod_2');
+null === $mods->get('mod_1'); // true
+null === $mods->get('mod_2'); // true
 
 $mods->clear();
 ```
@@ -146,10 +146,10 @@ const YEAR_IN_SECONDS    = 365 * DAY_IN_SECONDS;
 ### Common usage with WordPress Transients API
 
 ```php
-if ( false === ( $special_data_to_save = \get_transient( 'special_data_to_save' ) ) ) {
+if (false === ($special_data_to_save = \get_transient('special_data_to_save'))) {
     // It wasn't there, so regenerate the data and save the transient
     $special_data_to_save = ['some-key' => 'come value'];
-    \set_transient( 'special_data_to_save', $special_data_to_save, 12 * HOUR_IN_SECONDS );
+    \set_transient('special_data_to_save', $special_data_to_save, 12 * HOUR_IN_SECONDS);
 }
 ```
 
@@ -166,11 +166,11 @@ $transient = new Transient();
  */
 $transient->set('my_transient', 'my_value', 60);
 
-'my_value' === $transient->get('my_transient');
+'my_value' === $transient->get('my_transient'); // true
 
 $transient->delete('my_transient');
 
-null === $transient->get('my_transient');
+null === $transient->get('my_transient'); // true
 
 $transient->setMultiple([
     'mod_1'	=> 'value_1',
@@ -183,15 +183,15 @@ $transient->setMultiple([
 ] === $transient->getMultiple([
     'mod_1',
     'mod_2',
-]);
+]); // true
 
 $transient->deleteMultiple([
     'mod_1',
     'mod_2',
 ]);
 
-null === $transient->get('mod_1');
-null === $transient->get('mod_2');
+null === $transient->get('mod_1'); // true
+null === $transient->get('mod_2'); // true
 ```
 
 ### Cache API
@@ -207,11 +207,11 @@ $cache = new Cache();
  */
 $cache->set('my_cache', 'my_value', 60);
 
-'my_value' === $cache->get('my_cache');
+'my_value' === $cache->get('my_cache'); // true
 
 $cache->delete('my_cache');
 
-null === $cache->get('my_cache');
+null === $cache->get('my_cache'); // true
 
 $cache->setMultiple([
     'mod_1'	=> 'value_1',
@@ -224,15 +224,15 @@ $cache->setMultiple([
 ] === $cache->getMultiple([
     'mod_1',
     'mod_2',
-]);
+]); // true
 
 $cache->deleteMultiple([
     'mod_1',
     'mod_2',
 ]);
 
-null === $cache->get('mod_1');
-null === $cache->get('mod_2');
+null === $cache->get('mod_1'); // true
+null === $cache->get('mod_2'); // true
 ```
 
 ## Advanced Usage

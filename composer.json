@@ -15,7 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php" : ">=7.4",
-        "italystrap/common": "dev-master"
+        "italystrap/common": "^1.0"
     },
     "require-dev": {
         "lucatume/wp-browser": "^3.1",
