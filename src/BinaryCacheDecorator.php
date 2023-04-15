@@ -42,7 +42,7 @@ class BinaryCacheDecorator implements CacheInterface
      * it is more simple to access later with the `BinaryTransient::get()` method.
      * If you have a better solution for this please go on and make a PR.
      */
-    public function set(string $key, $value, ?int $ttl = 0): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
         if (\is_string($value) && !mb_check_encoding($value, 'ASCII')) {
             return $this->driver->set($key, [$this->generateKey($key) => $this->encode($value)], $ttl);
@@ -51,7 +51,7 @@ class BinaryCacheDecorator implements CacheInterface
         return $this->driver->set($key, $value, $ttl);
     }
 
-    public function update(string $key, $value, ?int $ttl = 0): bool
+    public function update(string $key, $value, ?int $ttl = null): bool
     {
         if (\is_string($value) && !mb_check_encoding($value, 'ASCII')) {
             return $this->driver->update($key, [$this->generateKey($key) => $this->encode($value)], $ttl);

@@ -9,7 +9,7 @@ namespace ItalyStrap\Storage;
 class Transient implements CacheInterface
 {
 
-    use KeyLengthValidate, MultipleTrait, SetMultipleCacheTrait;
+    use ValidateKeyLength, NormalizeTtlTrait, MultipleTrait, SetMultipleCacheTrait;
 
     public function get(string $key, $default = null)
     {
@@ -17,13 +17,16 @@ class Transient implements CacheInterface
         return \get_transient($key) ?? $default;
     }
 
-    public function set(string $key, $value, ?int $ttl = 0): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
         $this->assertKeyLength($key);
+
+        $ttl = $this->parseTtl($ttl);
+
         return (bool)\set_transient($key, $value, $ttl);
     }
 
-    public function update(string $key, $value, ?int $ttl = 0): bool
+    public function update(string $key, $value, ?int $ttl = null): bool
     {
         $this->assertKeyLength($key);
         return $this->set($key, $value, $ttl);

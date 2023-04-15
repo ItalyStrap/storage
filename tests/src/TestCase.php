@@ -23,6 +23,10 @@ class TestCase extends Unit
 	// phpcs:ignore
 	protected function _before() {
         $this->defineFunction('get_transient', function (string $key) {
+            if ($this->ttl && $this->ttl < 0) {
+                return false;
+            }
+
             return $this->store[ $key ] ?? false;
         });
 
@@ -57,6 +61,10 @@ class TestCase extends Unit
         });
 
         $this->defineFunction('wp_cache_get', function ($key, $group = '', $force = false, &$found = null) {
+            if ($this->ttl && $this->ttl < 0) {
+                return false;
+            }
+
             $found = isset($this->store[ $key ]);
             return $this->store[ $key ] ?? false;
         });
@@ -72,11 +80,19 @@ class TestCase extends Unit
         });
 
         $this->defineFunction('wp_cache_add', function ($key, $data, $group = '', $expire = 0) {
+            if ($this->ttl && $this->ttl < 0) {
+                return false;
+            }
+
             $this->store[ $key ] = $data;
             return $this->set_transient_return;
         });
 
         $this->defineFunction('wp_cache_replace', function ($key, $data, $group = '', $expire = 0) {
+            if ($this->ttl && $this->ttl < 0) {
+                return false;
+            }
+
             $this->store[ $key ] = $data;
             return $this->set_transient_return;
         });
@@ -97,6 +113,10 @@ class TestCase extends Unit
         });
 
         $this->defineFunction('wp_cache_set_multiple', function ($keys, $group = '', $expire = 0) {
+            if ($this->ttl && $this->ttl < 0) {
+                return false;
+            }
+
             foreach ($keys as $key => $value) {
                 $this->store[ $key ] = $value;
             }

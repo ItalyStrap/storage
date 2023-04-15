@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace ItalyStrap\Storage;
 
-trait KeyLengthValidate
+trait ValidateKeyLength
 {
     public function assertKeyLength(string $key): void
     {
-        if (\strlen($key) > 180) {
+        if (\strlen($key) > 172) {
             throw new \InvalidArgumentException(\sprintf(
                 'The maximum length key "%s" is %d characters',
                 $key,

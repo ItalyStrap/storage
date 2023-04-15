@@ -85,4 +85,34 @@ trait TransientTestsTrait
         $this->assertFalse(\get_transient('key1'), '');
         $this->assertFalse(\get_transient('key2'), '');
     }
+
+    public static function expiredTtlProvider(): iterable
+    {
+        yield 'Less 1' => [
+            -1,
+        ];
+
+        yield 'Zero' => [
+            0,
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider expiredTtlProvider
+     */
+    public function expiredTtl($ttl): void
+    {
+        $this->makeInstance()->set('key', 'value', $ttl);
+        $this->assertFalse(\get_transient('key'), '');
+    }
+
+    /**
+     * @test
+     */
+    public function ttlValueAsNull(): void
+    {
+        $this->makeInstance()->set('key', 'value', null);
+        $this->assertSame('value', \get_transient('key'), '');
+    }
 }

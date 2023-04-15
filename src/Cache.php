@@ -15,19 +15,22 @@ namespace ItalyStrap\Storage;
  */
 class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 {
+    use NormalizeTtlTrait;
 
     public function get(string $key, $default = null)
     {
         return \wp_cache_get($key, 'default') ?? $default;
     }
 
-    public function set(string $key, $value, ?int $ttl = 0): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
+        $ttl = $this->parseTtl($ttl);
         return (bool)\wp_cache_set($key, $value, 'default', $ttl);
     }
 
-    public function update(string $key, $value, ?int $ttl = 0): bool
+    public function update(string $key, $value, ?int $ttl = null): bool
     {
+        $ttl = $this->parseTtl($ttl);
         return (bool)\wp_cache_replace($key, $value, 'default', $ttl);
     }
 
@@ -68,6 +71,7 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
     public function setMultiple(iterable $values, ?int $ttl = null): bool
     {
         $newValues = $this->convertArray($values);
+        $ttl = $this->parseTtl($ttl);
         return (bool)\wp_cache_set_multiple((array)$newValues, 'default', $ttl);
     }
 
