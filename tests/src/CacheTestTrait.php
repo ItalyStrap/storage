@@ -44,7 +44,8 @@ trait CacheTestTrait
     /**
      * @test
      */
-    public function testGetCacheWhenThaValueIsZero(): void {
+    public function testGetCacheWhenThaValueIsZero(): void
+    {
         $sut = $this->makeInstance();
         \wp_cache_set('foo', 0);
         $this->assertSame(0, $sut->get('foo'));
@@ -140,7 +141,6 @@ trait CacheTestTrait
         yield 'ArrayObject' => [
             new \ArrayObject(['foo' => 'bar', 'baz' => 'qux'])
         ];
-
     }
 
     /**

@@ -46,12 +46,14 @@ trait ValidateKeyLenghtTestTrait
      * @test
      * @dataProvider lengthProvider
      */
-    public function testInvalidKeyLengthOnUpdate(int $length): void {
+    public function testInvalidKeyLengthOnUpdate(int $length): void
+    {
         $this->commonExpectedException();
         $this->makeInstance()->update(\str_repeat('a', $length), 'value');
     }
 
-    public function testValidKeyLengthOnUpdate(): void {
+    public function testValidKeyLengthOnUpdate(): void
+    {
         $this->makeInstance()->update(\str_repeat('a', 172), 'value');
     }
 

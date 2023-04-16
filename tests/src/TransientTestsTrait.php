@@ -35,7 +35,8 @@ trait TransientTestsTrait
     /**
      * @test
      */
-    public function getTransientDefaultValueIfKeyDoesNotExists(): void {
+    public function getTransientDefaultValueIfKeyDoesNotExists(): void
+    {
         $this->assertSame('default', $this->makeInstance()->get('key', 'default'), '');
     }
 
