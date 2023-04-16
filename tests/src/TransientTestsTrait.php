@@ -7,6 +7,8 @@ use ItalyStrap\Storage\Transient;
 
 trait TransientTestsTrait
 {
+    use ValidateKeyLenghtTestTrait, NormalizeTtlTestTrait;
+
     public function testInstanceOk(): void
     {
         $this->assertInstanceOf(Transient::class, $this->makeInstance());
@@ -33,6 +35,22 @@ trait TransientTestsTrait
     /**
      * @test
      */
+    public function getTransientDefaultValueIfKeyDoesNotExists(): void {
+        $this->assertSame('default', $this->makeInstance()->get('key', 'default'), '');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetTransientWhenThaValueIsZero()
+    {
+        \set_transient('key', 0);
+        $this->assertSame(0, $this->makeInstance()->get('key'), '');
+    }
+
+    /**
+     * @test
+     */
     public function updateTransient()
     {
         $this->makeInstance()->update('key', 'value');
@@ -48,40 +66,94 @@ trait TransientTestsTrait
         $this->assertSame('value', \get_transient('key'), '');
         $this->makeInstance()->delete('key');
         $this->assertFalse(\get_transient('key'), '');
-        $this->assertFalse($this->makeInstance()->get('key'), '');
+        $this->assertNull($this->makeInstance()->get('key'), '');
+    }
+
+    public static function iterableValueForSetMultipleProvider(): iterable
+    {
+        yield 'Array' => [
+            ['key1' => 'value1', 'key2' => 'value2'],
+        ];
+
+        yield 'Traversable' => [
+            new \ArrayIterator(['key1' => 'value1', 'key2' => 'value2']),
+        ];
+
+        yield 'Generator' => [
+            (function () {
+                yield 'key1' => 'value1';
+                yield 'key2' => 'value2';
+            })(),
+        ];
+
+        yield 'ArrayObject' => [
+            new \ArrayObject(['key1' => 'value1', 'key2' => 'value2']),
+        ];
     }
 
     /**
      * @test
+     * @dataProvider iterableValueForSetMultipleProvider
      */
-    public function setMultipleTransient()
+    public function setMultipleTransient(iterable $values)
     {
-        $this->makeInstance()->setMultiple(['key1' => 'value1', 'key2' => 'value2']);
+        $this->makeInstance()->setMultiple($values);
         $this->assertSame('value1', \get_transient('key1'), '');
         $this->assertSame('value2', \get_transient('key2'), '');
     }
 
-    /**
-     * @test
-     */
-    public function getMultipleTransient()
+    public static function iterableValuesForGetMultipleAndUpdateMultipleProvider(): iterable
     {
-        \set_transient('key1', 'value1');
-        \set_transient('key2', 'value2');
-        $actual = $this->makeInstance()->getMultiple(['key1', 'key2']);
-        $this->assertSame(['key1' => 'value1', 'key2' => 'value2'], \iterator_to_array($actual), '');
+        yield 'Array' => [
+            ['key1', 'key2'],
+            ['key1' => 'value1', 'key2' => 'value2'],
+        ];
+
+        yield 'Traversable' => [
+            new \ArrayIterator(['key1', 'key2']),
+            ['key1' => 'value1', 'key2' => 'value2'],
+        ];
+
+        yield 'Generator' => [
+            (function () {
+                yield 'key1';
+                yield 'key2';
+            })(),
+            ['key1' => 'value1', 'key2' => 'value2'],
+        ];
+
+        yield 'ArrayObject' => [
+            new \ArrayObject(['key1', 'key2']),
+            ['key1' => 'value1', 'key2' => 'value2'],
+        ];
     }
 
     /**
      * @test
+     * @dataProvider iterableValuesForGetMultipleAndUpdateMultipleProvider
      */
-    public function deleteMultipleTransient()
+    public function getMultipleTransient(iterable $keys, iterable $expected = [])
+    {
+        \set_transient('key1', 'value1');
+        \set_transient('key2', 'value2');
+        $actual = $this->makeInstance()->getMultiple($keys);
+
+        foreach ($actual as $key => $value) {
+            $this->assertSame($expected[$key], $value, '');
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider iterableValuesForGetMultipleAndUpdateMultipleProvider
+     */
+    public function deleteMultipleTransient(iterable $keys, iterable $expected = [])
     {
         \set_transient('key1', 'value1');
         \set_transient('key2', 'value2');
         $this->assertSame('value1', \get_transient('key1'), '');
         $this->assertSame('value2', \get_transient('key2'), '');
-        $this->makeInstance()->deleteMultiple(['key1', 'key2']);
+        $this->makeInstance()->deleteMultiple($keys);
         $this->assertFalse(\get_transient('key1'), '');
         $this->assertFalse(\get_transient('key2'), '');
     }

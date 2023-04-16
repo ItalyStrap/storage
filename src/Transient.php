@@ -11,24 +11,26 @@ class Transient implements CacheInterface
 
     use ValidateKeyLength, NormalizeTtlTrait, MultipleTrait, SetMultipleCacheTrait;
 
-    public function get(string $key, $default = null)
-    {
-        $this->assertKeyLength($key);
-        return \get_transient($key) ?? $default;
-    }
-
     public function set(string $key, $value, ?int $ttl = null): bool
     {
         $this->assertKeyLength($key);
-
         $ttl = $this->parseTtl($ttl);
-
         return \set_transient($key, $value, $ttl);
+    }
+
+    public function get(string $key, $default = null)
+    {
+        $this->assertKeyLength($key);
+        $value = \get_transient($key);
+        if ($value === 0) {
+            return $value;
+        }
+
+        return $value ?: $default;
     }
 
     public function update(string $key, $value, ?int $ttl = null): bool
     {
-        $this->assertKeyLength($key);
         return $this->set($key, $value, $ttl);
     }
 

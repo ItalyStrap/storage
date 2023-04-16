@@ -17,15 +17,20 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 {
     use NormalizeTtlTrait;
 
-    public function get(string $key, $default = null)
-    {
-        return \wp_cache_get($key, 'default') ?? $default;
-    }
-
     public function set(string $key, $value, ?int $ttl = null): bool
     {
         $ttl = $this->parseTtl($ttl);
         return \wp_cache_set($key, $value, 'default', $ttl);
+    }
+
+    public function get(string $key, $default = null)
+    {
+        $value = \wp_cache_get($key, 'default');
+        if ($value === 0) {
+            return $value;
+        }
+
+        return $value ?: $default;
     }
 
     public function update(string $key, $value, ?int $ttl = null): bool
@@ -72,7 +77,7 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
     {
         $newValues = $this->convertArray($values);
         $ttl = $this->parseTtl($ttl);
-        return (bool)\wp_cache_set_multiple((array)$newValues, 'default', $ttl);
+        return (bool)\wp_cache_set_multiple($newValues, 'default', $ttl);
     }
 
     /**
@@ -97,14 +102,14 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
     public function deleteMultiple(iterable $keys): bool
     {
         $newValues = $this->convertArray($keys);
-        return (bool)\wp_cache_delete_multiple((array)$newValues, 'default');
+        return (bool)\wp_cache_delete_multiple($newValues, 'default');
     }
 
     /**
      * @param iterable $values
-     * @return iterable
+     * @return array
      */
-    private function convertArray(iterable $values): iterable
+    private function convertArray(iterable $values): array
     {
         return $values instanceof \Traversable ? \iterator_to_array($values) : $values;
     }

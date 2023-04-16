@@ -8,6 +8,8 @@ use ItalyStrap\Storage\Cache;
 
 trait CacheTestTrait
 {
+    use NormalizeTtlTestTrait;
+
     /**
      * @test
      */
@@ -20,10 +22,21 @@ trait CacheTestTrait
     /**
      * @test
      */
+    public function setCache(): void
+    {
+        $sut = $this->makeInstance();
+        $this->assertTrue($sut->set('foo', 'bar'));
+        $this->assertSame('bar', \wp_cache_get('foo'));
+        $this->assertSame('bar', $sut->get('foo'));
+    }
+
+    /**
+     * @test
+     */
     public function getCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertFalse($sut->get('foo'));
+        $this->assertNull($sut->get('foo'));
         \wp_cache_set('foo', 'bar');
         $this->assertSame('bar', $sut->get('foo'));
     }
@@ -31,12 +44,10 @@ trait CacheTestTrait
     /**
      * @test
      */
-    public function setCache(): void
-    {
+    public function testGetCacheWhenThaValueIsZero(): void {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
+        \wp_cache_set('foo', 0);
+        $this->assertSame(0, $sut->get('foo'));
     }
 
     /**
@@ -64,7 +75,7 @@ trait CacheTestTrait
         $this->assertSame('bar', $sut->get('foo'));
         $this->assertTrue($sut->delete('foo'));
         $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertFalse($sut->get('foo'));
+        $this->assertNull($sut->get('foo'));
     }
 
     /**
@@ -106,16 +117,40 @@ trait CacheTestTrait
         $this->assertSame('bar', $sut->get('foo'));
         $this->assertTrue($sut->clear());
         $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertFalse($sut->get('foo'));
+        $this->assertNull($sut->get('foo'));
+    }
+
+    public static function iterableValueForSetMultipleProvider()
+    {
+        yield 'array' => [
+            ['foo' => 'bar', 'baz' => 'qux']
+        ];
+
+        yield 'Traversable' => [
+            new \ArrayIterator(['foo' => 'bar', 'baz' => 'qux'])
+        ];
+
+        yield 'Generator' => [
+            (function () {
+                yield 'foo' => 'bar';
+                yield 'baz' => 'qux';
+            })(),
+        ];
+
+        yield 'ArrayObject' => [
+            new \ArrayObject(['foo' => 'bar', 'baz' => 'qux'])
+        ];
+
     }
 
     /**
      * @test
+     * @dataProvider iterableValueForSetMultipleProvider
      */
-    public function setMultiple(): void
+    public function setMultiple(iterable $values): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'baz' => 'qux']));
+        $this->assertTrue($sut->setMultiple($values));
         $this->assertSame('bar', \wp_cache_get('foo'));
         $this->assertSame('bar', $sut->get('foo'));
         $this->assertSame('qux', \wp_cache_get('baz'));
@@ -123,28 +158,59 @@ trait CacheTestTrait
         $this->assertTrue(\wp_cache_get_multiple(['foo', 'baz']) === ['foo' => 'bar', 'baz' => 'qux']);
     }
 
-    /**
-     * @test
-     */
-    public function getMultiple(): void
+    public static function iterableValuesForGetMultipleAndUpdateMultipleProvider()
     {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'baz' => 'qux']));
-        $actual = $sut->getMultiple(['foo', 'baz']);
-        $this->assertSame(['foo' => 'bar', 'baz' => 'qux'], \iterator_to_array($actual));
+        yield 'array' => [
+            ['foo', 'baz'],
+            ['foo' => 'bar', 'baz' => 'qux'],
+        ];
+
+        yield 'Traversable' => [
+            new \ArrayIterator(['foo', 'baz']),
+            ['foo' => 'bar', 'baz' => 'qux'],
+        ];
+
+        yield 'Generator' => [
+            (function () {
+                yield 'foo';
+                yield 'baz';
+            })(),
+            ['foo' => 'bar', 'baz' => 'qux'],
+        ];
+
+        yield 'ArrayObject' => [
+            new \ArrayObject(['foo', 'baz']),
+            ['foo' => 'bar', 'baz' => 'qux'],
+        ];
     }
 
     /**
      * @test
+     * @dataProvider iterableValuesForGetMultipleAndUpdateMultipleProvider
      */
-    public function deleteMultiple(): void
+    public function getMultiple(iterable $keys, iterable $expected = []): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'baz' => 'qux']));
-        $this->assertTrue($sut->deleteMultiple(['foo', 'baz']));
+        $this->assertTrue($sut->setMultiple($expected));
+        $actual = $sut->getMultiple($keys);
+
+        foreach ($actual as $key => $value) {
+            $this->assertSame($expected[$key], $value, '');
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider iterableValuesForGetMultipleAndUpdateMultipleProvider
+     */
+    public function deleteMultiple(iterable $keys, iterable $expected = []): void
+    {
+        $sut = $this->makeInstance();
+        $this->assertTrue($sut->setMultiple($expected));
+        $this->assertTrue($sut->deleteMultiple($keys));
         $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertFalse($sut->get('foo'));
+        $this->assertNull($sut->get('foo'));
         $this->assertFalse(\wp_cache_get('baz'));
-        $this->assertFalse($sut->get('baz'));
+        $this->assertNull($sut->get('baz'));
     }
 }

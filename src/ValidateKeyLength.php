@@ -5,7 +5,7 @@ namespace ItalyStrap\Storage;
 
 trait ValidateKeyLength
 {
-    public function assertKeyLength(string $key): void
+    private function assertKeyLength(string $key): void
     {
         if (\strlen($key) > 172) {
             throw new \InvalidArgumentException(\sprintf(
