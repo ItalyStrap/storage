@@ -25,18 +25,18 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
     public function set(string $key, $value, ?int $ttl = null): bool
     {
         $ttl = $this->parseTtl($ttl);
-        return (bool)\wp_cache_set($key, $value, 'default', $ttl);
+        return \wp_cache_set($key, $value, 'default', $ttl);
     }
 
     public function update(string $key, $value, ?int $ttl = null): bool
     {
         $ttl = $this->parseTtl($ttl);
-        return (bool)\wp_cache_replace($key, $value, 'default', $ttl);
+        return \wp_cache_replace($key, $value, 'default', $ttl);
     }
 
     public function delete(string $key): bool
     {
-        return (bool)\wp_cache_delete($key, 'default');
+        return \wp_cache_delete($key, 'default');
     }
 
     /**
@@ -65,7 +65,7 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 
     public function clear(): bool
     {
-        return (bool)\wp_cache_flush();
+        return \wp_cache_flush();
     }
 
     public function setMultiple(iterable $values, ?int $ttl = null): bool
@@ -82,11 +82,14 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
      */
     public function getMultiple(iterable $keys, $default = null): iterable
     {
+        /**
+         * @var array<array-key, mixed> $newValues
+         */
         $newValues = $this->convertArray($keys);
         /**
          * @var mixed $value
          */
-        foreach ((array)\wp_cache_get_multiple($newValues, 'default') as $key => $value) {
+        foreach (\wp_cache_get_multiple($newValues, 'default') as $key => $value) {
             yield $key => $value ?? $default;
         }
     }

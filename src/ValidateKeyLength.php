@@ -11,7 +11,7 @@ trait ValidateKeyLength
             throw new \InvalidArgumentException(\sprintf(
                 'The maximum length key "%s" is %d characters',
                 $key,
-                180
+                172
             ));
         }
     }

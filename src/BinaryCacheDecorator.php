@@ -29,8 +29,11 @@ class BinaryCacheDecorator implements CacheInterface
         $data = $this->driver->get($key, $default);
 
         $generated_key = $this->generateKey($key);
-        if (\is_array($data) && \array_key_exists($generated_key, $data)) {
-            return $this->decode((string)$data[$generated_key]) ?: $data;
+        if (\is_array($data)
+            && \array_key_exists($generated_key, $data)
+            && \is_string($data[$generated_key])
+        ) {
+            return $this->decode($data[$generated_key]) ?: $data;
         }
 
         return $data;

@@ -27,7 +27,7 @@ class Mod implements StoreInterface, ClearableInterface
      */
     public function set(string $key, $value): bool
     {
-        return (bool)\set_theme_mod($key, $value);
+        return \set_theme_mod($key, $value);
     }
 
     /**
@@ -37,7 +37,7 @@ class Mod implements StoreInterface, ClearableInterface
      */
     public function update(string $key, $value): bool
     {
-        return (bool)\set_theme_mod($key, $value);
+        return \set_theme_mod($key, $value);
     }
 
     /**

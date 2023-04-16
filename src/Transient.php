@@ -23,7 +23,7 @@ class Transient implements CacheInterface
 
         $ttl = $this->parseTtl($ttl);
 
-        return (bool)\set_transient($key, $value, $ttl);
+        return \set_transient($key, $value, $ttl);
     }
 
     public function update(string $key, $value, ?int $ttl = null): bool
@@ -35,6 +35,6 @@ class Transient implements CacheInterface
     public function delete(string $key): bool
     {
         $this->assertKeyLength($key);
-        return (bool)\delete_transient($key);
+        return \delete_transient($key);
     }
 }

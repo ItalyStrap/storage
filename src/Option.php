@@ -31,7 +31,7 @@ class Option implements StoreInterface
      */
     public function set(string $key, $value): bool
     {
-        return (bool)\add_option($key, $value);
+        return \add_option($key, $value);
     }
 
     /**
@@ -41,7 +41,7 @@ class Option implements StoreInterface
      */
     public function update(string $key, $value): bool
     {
-        return (bool)\update_option($key, $value);
+        return \update_option($key, $value);
     }
 
     /**
@@ -50,6 +50,6 @@ class Option implements StoreInterface
      */
     public function delete(string $key): bool
     {
-        return (bool)\delete_option($key);
+        return \delete_option($key);
     }
 }
