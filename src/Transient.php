@@ -21,6 +21,9 @@ class Transient implements CacheInterface
     public function get(string $key, $default = null)
     {
         $this->assertKeyLength($key);
+        /**
+         * @var mixed $value
+         */
         $value = \get_transient($key);
         if ($value === 0) {
             return $value;

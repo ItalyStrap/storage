@@ -25,6 +25,9 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 
     public function get(string $key, $default = null)
     {
+        /**
+         * @var mixed $value
+         */
         $value = \wp_cache_get($key, 'default');
         if ($value === 0) {
             return $value;
@@ -87,9 +90,6 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
      */
     public function getMultiple(iterable $keys, $default = null): iterable
     {
-        /**
-         * @var array<array-key, mixed> $newValues
-         */
         $newValues = $this->convertArray($keys);
         /**
          * @var mixed $value
