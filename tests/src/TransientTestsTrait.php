@@ -7,7 +7,7 @@ use ItalyStrap\Storage\Transient;
 
 trait TransientTestsTrait
 {
-    use ValidateKeyLenghtTestTrait, NormalizeTtlTestTrait;
+    use ValidateKeyLenghtTestTrait, NormalizeTtlTestTrait, CommonMultipleProviderTrait;
 
     public function testInstanceOk(): void
     {
@@ -70,28 +70,6 @@ trait TransientTestsTrait
         $this->assertNull($this->makeInstance()->get('key'), '');
     }
 
-    public static function iterableValueForSetMultipleProvider(): iterable
-    {
-        yield 'Array' => [
-            ['key1' => 'value1', 'key2' => 'value2'],
-        ];
-
-        yield 'Traversable' => [
-            new \ArrayIterator(['key1' => 'value1', 'key2' => 'value2']),
-        ];
-
-        yield 'Generator' => [
-            (function () {
-                yield 'key1' => 'value1';
-                yield 'key2' => 'value2';
-            })(),
-        ];
-
-        yield 'ArrayObject' => [
-            new \ArrayObject(['key1' => 'value1', 'key2' => 'value2']),
-        ];
-    }
-
     /**
      * @test
      * @dataProvider iterableValueForSetMultipleProvider
@@ -101,32 +79,6 @@ trait TransientTestsTrait
         $this->makeInstance()->setMultiple($values);
         $this->assertSame('value1', \get_transient('key1'), '');
         $this->assertSame('value2', \get_transient('key2'), '');
-    }
-
-    public static function iterableValuesForGetMultipleAndUpdateMultipleProvider(): iterable
-    {
-        yield 'Array' => [
-            ['key1', 'key2'],
-            ['key1' => 'value1', 'key2' => 'value2'],
-        ];
-
-        yield 'Traversable' => [
-            new \ArrayIterator(['key1', 'key2']),
-            ['key1' => 'value1', 'key2' => 'value2'],
-        ];
-
-        yield 'Generator' => [
-            (function () {
-                yield 'key1';
-                yield 'key2';
-            })(),
-            ['key1' => 'value1', 'key2' => 'value2'],
-        ];
-
-        yield 'ArrayObject' => [
-            new \ArrayObject(['key1', 'key2']),
-            ['key1' => 'value1', 'key2' => 'value2'],
-        ];
     }
 
     /**

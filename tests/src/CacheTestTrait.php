@@ -8,7 +8,7 @@ use ItalyStrap\Storage\Cache;
 
 trait CacheTestTrait
 {
-    use NormalizeTtlTestTrait;
+    use NormalizeTtlTestTrait, CommonMultipleProviderTrait;
 
     /**
      * @test
@@ -25,9 +25,9 @@ trait CacheTestTrait
     public function setCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
+        $this->assertTrue($sut->set('key', 'value'));
+        $this->assertSame('value', \wp_cache_get('key'));
+        $this->assertSame('value', $sut->get('key'));
     }
 
     /**
@@ -36,9 +36,17 @@ trait CacheTestTrait
     public function getCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertNull($sut->get('foo'));
-        \wp_cache_set('foo', 'bar');
-        $this->assertSame('bar', $sut->get('foo'));
+        $this->assertNull($sut->get('key'));
+        \wp_cache_set('key', 'value');
+        $this->assertSame('value', $sut->get('key'));
+    }
+
+    /**
+     * @test
+     */
+    public function getTransientDefaultValueIfKeyDoesNotExists(): void
+    {
+        $this->assertSame('default', $this->makeInstance()->get('key', 'default'), '');
     }
 
     /**
@@ -47,8 +55,8 @@ trait CacheTestTrait
     public function testGetCacheWhenThaValueIsZero(): void
     {
         $sut = $this->makeInstance();
-        \wp_cache_set('foo', 0);
-        $this->assertSame(0, $sut->get('foo'));
+        \wp_cache_set('key', 0);
+        $this->assertSame(0, $sut->get('key'));
     }
 
     /**
@@ -57,12 +65,12 @@ trait CacheTestTrait
     public function updateCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertTrue($sut->update('foo', 'baz'));
-        $this->assertSame('baz', \wp_cache_get('foo'));
-        $this->assertSame('baz', $sut->get('foo'));
+        $this->assertTrue($sut->set('key', 'value'));
+        $this->assertSame('value', \wp_cache_get('key'));
+        $this->assertSame('value', $sut->get('key'));
+        $this->assertTrue($sut->update('key', 'value'));
+        $this->assertSame('value', \wp_cache_get('key'));
+        $this->assertSame('value', $sut->get('key'));
     }
 
     /**
@@ -71,12 +79,12 @@ trait CacheTestTrait
     public function deleteCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertTrue($sut->delete('foo'));
-        $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertNull($sut->get('foo'));
+        $this->assertTrue($sut->set('key', 'value'));
+        $this->assertSame('value', \wp_cache_get('key'));
+        $this->assertSame('value', $sut->get('key'));
+        $this->assertTrue($sut->delete('key'));
+        $this->assertFalse(\wp_cache_get('key'));
+        $this->assertNull($sut->get('key'));
     }
 
     /**
@@ -85,12 +93,12 @@ trait CacheTestTrait
     public function incrementCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 1));
-        $this->assertSame(1, \wp_cache_get('foo'));
-        $this->assertSame(1, $sut->get('foo'));
-        $this->assertSame(2, $sut->increment('foo'));
-        $this->assertSame(2, \wp_cache_get('foo'));
-        $this->assertSame(2, $sut->get('foo'));
+        $this->assertTrue($sut->set('key', 1));
+        $this->assertSame(1, \wp_cache_get('key'));
+        $this->assertSame(1, $sut->get('key'));
+        $this->assertSame(2, $sut->increment('key'));
+        $this->assertSame(2, \wp_cache_get('key'));
+        $this->assertSame(2, $sut->get('key'));
     }
 
     /**
@@ -99,12 +107,12 @@ trait CacheTestTrait
     public function decrementCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 1));
-        $this->assertSame(1, \wp_cache_get('foo'));
-        $this->assertSame(1, $sut->get('foo'));
-        $this->assertSame(0, $sut->decrement('foo'));
-        $this->assertSame(0, \wp_cache_get('foo'));
-        $this->assertSame(0, $sut->get('foo'));
+        $this->assertTrue($sut->set('key', 1));
+        $this->assertSame(1, \wp_cache_get('key'));
+        $this->assertSame(1, $sut->get('key'));
+        $this->assertSame(0, $sut->decrement('key'));
+        $this->assertSame(0, \wp_cache_get('key'));
+        $this->assertSame(0, $sut->get('key'));
     }
 
     /**
@@ -113,34 +121,12 @@ trait CacheTestTrait
     public function clearCache(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
+        $this->assertTrue($sut->set('key', 'value'));
+        $this->assertSame('value', \wp_cache_get('key'));
+        $this->assertSame('value', $sut->get('key'));
         $this->assertTrue($sut->clear());
-        $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertNull($sut->get('foo'));
-    }
-
-    public static function iterableValueForSetMultipleProvider()
-    {
-        yield 'array' => [
-            ['foo' => 'bar', 'baz' => 'qux']
-        ];
-
-        yield 'Traversable' => [
-            new \ArrayIterator(['foo' => 'bar', 'baz' => 'qux'])
-        ];
-
-        yield 'Generator' => [
-            (function () {
-                yield 'foo' => 'bar';
-                yield 'baz' => 'qux';
-            })(),
-        ];
-
-        yield 'ArrayObject' => [
-            new \ArrayObject(['foo' => 'bar', 'baz' => 'qux'])
-        ];
+        $this->assertFalse(\wp_cache_get('key'));
+        $this->assertNull($sut->get('key'));
     }
 
     /**
@@ -151,37 +137,11 @@ trait CacheTestTrait
     {
         $sut = $this->makeInstance();
         $this->assertTrue($sut->setMultiple($values));
-        $this->assertSame('bar', \wp_cache_get('foo'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertSame('qux', \wp_cache_get('baz'));
-        $this->assertSame('qux', $sut->get('baz'));
-        $this->assertTrue(\wp_cache_get_multiple(['foo', 'baz']) === ['foo' => 'bar', 'baz' => 'qux']);
-    }
-
-    public static function iterableValuesForGetMultipleAndUpdateMultipleProvider()
-    {
-        yield 'array' => [
-            ['foo', 'baz'],
-            ['foo' => 'bar', 'baz' => 'qux'],
-        ];
-
-        yield 'Traversable' => [
-            new \ArrayIterator(['foo', 'baz']),
-            ['foo' => 'bar', 'baz' => 'qux'],
-        ];
-
-        yield 'Generator' => [
-            (function () {
-                yield 'foo';
-                yield 'baz';
-            })(),
-            ['foo' => 'bar', 'baz' => 'qux'],
-        ];
-
-        yield 'ArrayObject' => [
-            new \ArrayObject(['foo', 'baz']),
-            ['foo' => 'bar', 'baz' => 'qux'],
-        ];
+        $this->assertSame('value1', \wp_cache_get('key1'));
+        $this->assertSame('value1', $sut->get('key1'));
+        $this->assertSame('value2', \wp_cache_get('key2'));
+        $this->assertSame('value2', $sut->get('key2'));
+        $this->assertTrue(\wp_cache_get_multiple(['key1', 'key2']) === ['key1' => 'value1', 'key2' => 'value2']);
     }
 
     /**
@@ -208,9 +168,9 @@ trait CacheTestTrait
         $sut = $this->makeInstance();
         $this->assertTrue($sut->setMultiple($expected));
         $this->assertTrue($sut->deleteMultiple($keys));
-        $this->assertFalse(\wp_cache_get('foo'));
-        $this->assertNull($sut->get('foo'));
-        $this->assertFalse(\wp_cache_get('baz'));
-        $this->assertNull($sut->get('baz'));
+        $this->assertFalse(\wp_cache_get(\array_key_first($expected)));
+        $this->assertNull($sut->get(\array_key_first($expected)));
+        $this->assertFalse(\wp_cache_get(\array_key_last($expected)));
+        $this->assertNull($sut->get(\array_key_last($expected)));
     }
 }
