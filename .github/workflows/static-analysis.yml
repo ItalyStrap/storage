@@ -3,6 +3,11 @@ name: Static Analysis
 on:
   pull_request:
   push:
+    paths:
+      - '**workflows/static-analysis.yml'
+      - '**.php'
+      - '**psalm.xml'
+      - '**composer.json'
 
 jobs:
   tests:

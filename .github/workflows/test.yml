@@ -17,6 +17,12 @@ env:
 on:
   pull_request:
   push:
+    paths:
+      - '**workflows/test.yml'
+      - '**.php'
+      - '**codeception.dist.yml'
+      - '**composer.json'
+      - '**.env'
 
   workflow_dispatch:
 
@@ -89,7 +95,8 @@ jobs:
         run: |
           ./vendor/bin/codecept run unit
           ./vendor/bin/codecept run wpunit
-          mkdir -p ./tests/_output/infection
-          chmod -R 777 ./tests/_output/infection
-          ./vendor/bin/infection --threads=4
+#          mkdir -p ./tests/_output/infection
+#          chmod -R 777 ./tests/_output/infection
+#          ./vendor/bin/infection --threads=4
+          ls -la ${{env.APP_FOLDER_PATH}}/wp-content/${{env.PROJECT_KIND}}/${{env.REPOSITORY_NAME}}/tests/_output
         working-directory: ${{env.APP_FOLDER_PATH}}/wp-content/${{env.PROJECT_KIND}}/${{env.REPOSITORY_NAME}}

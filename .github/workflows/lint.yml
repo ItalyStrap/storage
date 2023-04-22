@@ -3,6 +3,11 @@ name: CS - File lint and file validation
 on:
   push:
   pull_request:
+    paths:
+      - '**workflows/lint.yml'
+      - '**.php'
+      - '**phpcs.xml.dist'
+      - '**composer.json'
 
 jobs:
   lint:
