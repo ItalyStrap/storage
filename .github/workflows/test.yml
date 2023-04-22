@@ -89,4 +89,5 @@ jobs:
         run: |
           ./vendor/bin/codecept run unit
           ./vendor/bin/codecept run wpunit
+          ./vendor/bin/infection --threads=4
         working-directory: ${{env.APP_FOLDER_PATH}}/wp-content/${{env.PROJECT_KIND}}/${{env.REPOSITORY_NAME}}

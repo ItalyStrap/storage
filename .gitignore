@@ -7,5 +7,4 @@
 codeception.yml
 
 ## Infection
-infection.json.dist
 infection.json
