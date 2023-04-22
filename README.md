@@ -69,6 +69,14 @@ If you want to store a value forever just use the `::set()` method without the e
 Another important thing is that if you use the `Cache::class` and pass any value as the expiration time this will have no effect, because the `Cache::class` is a wrapper of the [WordPress Cache API](https://developer.wordpress.org/reference/classes/wp_object_cache/) and the default API will not persist any data.
 If you install some other plugin that provide to you another implementation of the Cache API refer to the documentation of that plugin to know if it supports expiration time or not.
 
+### Why the `::update()` method exists?
+
+You may ask why the `::update()` method exists, in fact you could use the `::set()` method to update a value, there was only a `\wp_cache_replace()` function in the WordPress Cache API that return false if value does not exist and `\update_option()` function that instead create a value if does not exist, so I decided to create the `::update()` method to have the same behavior of the Options API.
+
+It is a bad decision?
+I left to you to decide :-D
+I think this method is not necessary, but I decided to leave it there for the sake of completeness.
+
 ## Basic Usage
 
 Remember that the maximum length of the key used for [transients](https://developer.wordpress.org/reference/functions/set_transient/) is <=172 characters, more characters will rise an Exception.

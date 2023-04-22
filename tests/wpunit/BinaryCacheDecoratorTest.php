@@ -21,7 +21,7 @@ class BinaryCacheDecoratorTest extends WPTestCase
     /**
      * @test
      */
-    public function testInstanceOk(): void
+    public function instanceOk(): void
     {
         $sut = $this->makeInstance();
         $this->assertInstanceOf(BinaryCacheDecorator::class, $sut);

@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace ItalyStrap\Storage;
 
 /**
+ * @see \get_transient()
+ * @see \set_transient()
+ * @see \delete_transient()
+ *
  * @psalm-api
  */
 class Transient implements CacheInterface

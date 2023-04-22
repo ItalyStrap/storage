@@ -16,8 +16,8 @@ class TestCase extends Unit
     protected $tester;
 
     protected array $store = [];
-    protected bool $set_transient_return = true;
-    protected bool $delete_transient_return = true;
+    protected bool $set_return_value = true;
+    protected bool $delete_return_value = true;
     protected ?int $ttl = 0;
 
 	// phpcs:ignore
@@ -30,30 +30,38 @@ class TestCase extends Unit
             return $this->store[ $key ] ?? false;
         });
 
-        $this->defineFunction('set_transient', function (string $key, $value, $ttl = 0) {
+        $this->defineFunction('set_transient', function (string $key, $value, $ttl = 0): bool {
             $this->ttl = $ttl;
             $this->store[ $key ] = $value;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('delete_transient', function (string $key) {
+        $this->defineFunction('delete_transient', function (string $key): bool {
+            if (!\array_key_exists($key, $this->store)) {
+                return false;
+            }
+
             unset($this->store[ $key ]);
-            return $this->delete_transient_return;
+            return $this->delete_return_value;
         });
 
-        $this->defineFunction('add_option', function ($key, $value, $deprecated = '', $autoload = 'yes') {
+        $this->defineFunction('add_option', function ($key, $value, $deprecated = '', $autoload = 'yes'): bool {
             $this->store[ $key ] = $value;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('update_option', function ($key, $value, $deprecated = '') {
+        $this->defineFunction('update_option', function ($key, $value, $deprecated = ''): bool {
             $this->store[ $key ] = $value;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('delete_option', function ($key) {
+        $this->defineFunction('delete_option', function ($key): bool {
+            if (!\array_key_exists($key, $this->store)) {
+                return false;
+            }
+
             unset($this->store[ $key ]);
-            return $this->delete_transient_return;
+            return $this->delete_return_value;
         });
 
         $this->defineFunction('get_option', function ($key, $default = false) {
@@ -69,61 +77,61 @@ class TestCase extends Unit
             return $this->store[ $key ] ?? false;
         });
 
-        $this->defineFunction('wp_cache_set', function ($key, $data, $group = '', $expire = 0) {
+        $this->defineFunction('wp_cache_set', function ($key, $data, $group = '', $expire = 0): bool {
             $this->store[ $key ] = $data;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('wp_cache_delete', function ($key, $group = '') {
+        $this->defineFunction('wp_cache_delete', function ($key, $group = ''): bool {
             unset($this->store[ $key ]);
-            return $this->delete_transient_return;
+            return $this->delete_return_value;
         });
 
-        $this->defineFunction('wp_cache_add', function ($key, $data, $group = '', $expire = 0) {
+        $this->defineFunction('wp_cache_add', function ($key, $data, $group = '', $expire = 0): bool {
             if ($this->ttl && $this->ttl < 0) {
                 return false;
             }
 
             $this->store[ $key ] = $data;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('wp_cache_replace', function ($key, $data, $group = '', $expire = 0) {
+        $this->defineFunction('wp_cache_replace', function ($key, $data, $group = '', $expire = 0): bool {
             if ($this->ttl && $this->ttl < 0) {
                 return false;
             }
 
             $this->store[ $key ] = $data;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('wp_cache_incr', function ($key, $offset = 1, $group = '') {
+        $this->defineFunction('wp_cache_incr', function ($key, $offset = 1, $group = ''): int {
             $this->store[ $key ] += $offset;
             return $this->store[ $key ];
         });
 
-        $this->defineFunction('wp_cache_decr', function ($key, $offset = 1, $group = '') {
+        $this->defineFunction('wp_cache_decr', function ($key, $offset = 1, $group = ''): int {
             $this->store[ $key ] -= $offset;
             return $this->store[ $key ];
         });
 
-        $this->defineFunction('wp_cache_flush', function () {
+        $this->defineFunction('wp_cache_flush', function (): bool {
             $this->store = [];
             return true;
         });
 
-        $this->defineFunction('wp_cache_set_multiple', function ($keys, $group = '', $expire = 0) {
+        $this->defineFunction('wp_cache_set_multiple', function ($keys, $group = '', $expire = 0): array {
             if ($this->ttl && $this->ttl < 0) {
-                return false;
+                return [false];
             }
 
             foreach ($keys as $key => $value) {
                 $this->store[ $key ] = $value;
             }
-            return $this->set_transient_return;
+            return [$this->set_return_value];
         });
 
-        $this->defineFunction('wp_cache_get_multiple', function ($keys, $group = '', $force = false) {
+        $this->defineFunction('wp_cache_get_multiple', function ($keys, $group = '', $force = false): array {
             $result = [];
             foreach ($keys as $key) {
                 $result[ $key ] = $this->store[ $key ] ?? false;
@@ -131,30 +139,34 @@ class TestCase extends Unit
             return $result;
         });
 
-        $this->defineFunction('wp_cache_delete_multiple', function ($keys, $group = '') {
+        $this->defineFunction('wp_cache_delete_multiple', function ($keys, $group = ''): array {
+            $result = [];
             foreach ($keys as $key) {
+                if (!\array_key_exists($key, $this->store)) {
+                    $result[ $key ] = false;
+                }
                 unset($this->store[ $key ]);
             }
-            return $this->delete_transient_return;
+            return $result;
         });
 
         $this->defineFunction('get_theme_mod', function ($key, $default = false) {
             return $this->store[ $key ] ?? $default;
         });
 
-        $this->defineFunction('set_theme_mod', function ($key, $value) {
+        $this->defineFunction('set_theme_mod', function ($key, $value): bool {
             $this->store[ $key ] = $value;
-            return $this->set_transient_return;
+            return $this->set_return_value;
         });
 
-        $this->defineFunction('remove_theme_mod', function ($key) {
+        $this->defineFunction('remove_theme_mod', function ($key): bool {
             unset($this->store[ $key ]);
-            return $this->delete_transient_return;
+            return $this->delete_return_value;
         });
 
-        $this->defineFunction('remove_theme_mods', function () {
+        $this->defineFunction('remove_theme_mods', function (): bool {
             $this->store = [];
-            return $this->delete_transient_return;
+            return $this->delete_return_value;
         });
     }
 
@@ -185,8 +197,8 @@ class TestCase extends Unit
             'remove_theme_mods',
         ]);
         $this->store = [];
-        $this->set_transient_return = true;
-        $this->delete_transient_return = true;
+        $this->set_return_value = true;
+        $this->delete_return_value = true;
 //        $this->prophet->checkPredictions();
     }
 
@@ -194,5 +206,11 @@ class TestCase extends Unit
     {
 		// phpcs:ignore
 		\tad\FunctionMockerLe\define($func_name, $callable);
+    }
+
+    protected function prepareSetMultipleReturnFalse(): void
+    {
+        $this->set_return_value = false;
+        $this->delete_return_value = false;
     }
 }

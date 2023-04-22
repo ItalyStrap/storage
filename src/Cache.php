@@ -38,8 +38,7 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 
     public function update(string $key, $value, ?int $ttl = null): bool
     {
-        $ttl = $this->parseTtl($ttl);
-        return \wp_cache_replace($key, $value, 'default', $ttl);
+        return $this->set($key, $value, $ttl);
     }
 
     public function delete(string $key): bool
@@ -80,7 +79,12 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
     {
         $newValues = $this->convertArray($values);
         $ttl = $this->parseTtl($ttl);
-        return (bool)\wp_cache_set_multiple($newValues, 'default', $ttl);
+        foreach (\wp_cache_set_multiple($newValues, 'default', $ttl) as $value) {
+            if (!$value) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -95,14 +99,21 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
          * @var mixed $value
          */
         foreach (\wp_cache_get_multiple($newValues, 'default') as $key => $value) {
-            yield $key => $value ?? $default;
+            yield $key => $value ?: $default;
         }
     }
 
     public function deleteMultiple(iterable $keys): bool
     {
         $newValues = $this->convertArray($keys);
-        return (bool)\wp_cache_delete_multiple($newValues, 'default');
+        $result = \wp_cache_delete_multiple($newValues, 'default');
+        foreach ($result as $value) {
+            if (!$value) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

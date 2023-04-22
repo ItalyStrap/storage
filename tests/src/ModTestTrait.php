@@ -8,6 +8,8 @@ use ItalyStrap\Storage\Mod;
 
 trait ModTestTrait
 {
+    use CommonTrait;
+
     /**
      * @test
      */
@@ -19,23 +21,19 @@ trait ModTestTrait
     /**
      * @test
      */
-    public function getMod(): void
+    public function setMod(): void
     {
-        $sut = $this->makeInstance();
-        $this->assertNull($sut->get('foo'));
-        \set_theme_mod('foo', 'bar');
-        $this->assertSame('bar', $sut->get('foo'));
+        $this->assertTrue($this->makeInstance()->set('key', 'value'));
+        $this->assertSame('value', \get_theme_mod('key'));
     }
 
     /**
      * @test
      */
-    public function setMod(): void
+    public function getMod(): void
     {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertSame('bar', \get_theme_mod('foo'));
+        \set_theme_mod('key', 'value');
+        $this->assertSame('value', $this->makeInstance()->get('key'));
     }
 
     /**
@@ -43,10 +41,8 @@ trait ModTestTrait
      */
     public function updateMod(): void
     {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->update('foo', 'bar'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertSame('bar', \get_theme_mod('foo'));
+        $this->assertTrue($this->makeInstance()->update('key', 'value'));
+        $this->assertSame('value', \get_theme_mod('key'));
     }
 
     /**
@@ -54,10 +50,13 @@ trait ModTestTrait
      */
     public function deleteMod(): void
     {
+        \set_theme_mod('key', 'value');
+        $this->assertSame('value', \get_theme_mod('key'));
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->delete('foo'));
-        $this->assertNull($sut->get('foo'));
-        $this->assertFalse(\get_theme_mod('foo'));
+
+        $this->assertTrue($sut->delete('key'));
+        $this->assertFalse(\get_theme_mod('key'));
+        $this->assertNull($sut->get('key'));
     }
 
     /**
@@ -66,65 +65,18 @@ trait ModTestTrait
     public function clearMod(): void
     {
         $sut = $this->makeInstance();
-        $this->assertTrue($sut->set('foo', 'bar'));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertSame('bar', \get_theme_mod('foo'));
+        $this->assertTrue($sut->set('key', 'value'));
+        $this->assertSame('value', $sut->get('key'));
         $this->assertTrue($sut->clear());
-        $this->assertNull($sut->get('foo'));
-        $this->assertFalse(\get_theme_mod('foo'));
+        $this->assertNull($sut->get('key'));
     }
 
     /**
      * @test
      */
-    public function setMultipleMod(): void
+    public function deleteMultipleReturnFalse()
     {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'bar' => 'foo']));
-        $this->assertSame('bar', $sut->get('foo'));
-        $this->assertSame('bar', \get_theme_mod('foo'));
-        $this->assertSame('foo', $sut->get('bar'));
-        $this->assertSame('foo', \get_theme_mod('bar'));
-    }
-
-    /**
-     * @test
-     */
-    public function getMultipleMod(): void
-    {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'bar' => 'foo']));
-        $actual = $sut->getMultiple(['foo', 'bar']);
-        $this->assertSame(['foo' => 'bar', 'bar' => 'foo'], \iterator_to_array($actual));
-        $this->assertSame('bar', \get_theme_mod('foo'));
-        $this->assertSame('foo', \get_theme_mod('bar'));
-    }
-
-    /**
-     * @test
-     */
-    public function deleteMultipleMod(): void
-    {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'bar' => 'foo']));
-        $this->assertTrue($sut->deleteMultiple(['foo', 'bar']));
-        $this->assertNull($sut->get('foo'));
-        $this->assertFalse(\get_theme_mod('foo'));
-        $this->assertNull($sut->get('bar'));
-        $this->assertFalse(\get_theme_mod('bar'));
-    }
-
-    /**
-     * @test
-     */
-    public function clear(): void
-    {
-        $sut = $this->makeInstance();
-        $this->assertTrue($sut->setMultiple(['foo' => 'bar', 'bar' => 'foo']));
-        $this->assertTrue($sut->clear());
-        $this->assertNull($sut->get('foo'));
-        $this->assertFalse(\get_theme_mod('foo'));
-        $this->assertNull($sut->get('bar'));
-        $this->assertFalse(\get_theme_mod('bar'));
+        // Deleting a theme mod will always return true even if the mod doesn't exist
+        $this->assertTrue($this->makeInstance()->deleteMultiple(['key1', 'key3']), '');
     }
 }

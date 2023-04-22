@@ -36,6 +36,9 @@ class WPTestCase extends WPUnit
         \delete_transient($this->cache_key);
         $this->cache_key = '';
 
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = false;
+
         // Then...
         parent::tearDown();
     }
@@ -47,5 +50,18 @@ class WPTestCase extends WPUnit
     {
         $post = static::factory()->post->create_and_get(['post_excerpt' => 'Lorem Ipsum']);
         $this->assertInstanceOf(\WP_Post::class, $post);
+    }
+
+    protected function prepareSetMultipleReturnFalse(): void
+    {
+        // Preparation for transient
+        global $_wp_using_ext_object_cache;
+        $_wp_using_ext_object_cache = true;
+
+        // Preparation for Theme Mods
+        $styleSheet = \wp_get_theme()->get_stylesheet();
+        \add_filter("pre_update_option_theme_mods_{$styleSheet}", function ($value, $old_value, $option) {
+            return $old_value;
+        }, 10, 3);
     }
 }
