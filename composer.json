@@ -107,7 +107,8 @@
             "@cs",
             "@psalm",
             "@unit",
-            "@wpunit"
+            "@wpunit",
+            "@infection"
         ]
     },
     "support"    : {
