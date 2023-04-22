@@ -15,21 +15,8 @@ env:
   APP_PASSWORD: root
 
 on:
-  push:
-    paths:
-      - '**.php'
-      - 'composer.*'
-      - 'phpcs.*'
-      - 'phpunit.*'
-      - 'psalm.*'
-
   pull_request:
-    paths:
-      - '**.php'
-      - 'composer.*'
-      - 'phpcs.*'
-      - 'phpunit.*'
-      - 'psalm.*'
+  push:
 
   workflow_dispatch:
 
