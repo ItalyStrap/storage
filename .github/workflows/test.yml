@@ -19,10 +19,11 @@ on:
   push:
     paths:
       - '**workflows/test.yml'
+      - '**.env'
       - '**.php'
       - '**codeception.dist.yml'
       - '**composer.json'
-      - '**.env'
+      - '**infection.json.dist'
 
   workflow_dispatch:
 
