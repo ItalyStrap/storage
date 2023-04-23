@@ -74,6 +74,9 @@
         "psalm": [
             "@php ./vendor/bin/psalm --no-cache"
         ],
+        "clean": [
+            "@php ./vendor/bin/codecept clean"
+        ],
         "tests": [
             "@unit",
             "@wpunit"
