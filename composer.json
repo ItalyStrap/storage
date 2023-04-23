@@ -60,10 +60,10 @@
     },
     "scripts": {
         "compat": [
-            ".\\vendor\\bin\\phpcs -p --standard=PHPCompatibility src"
+            "@php ./vendor/bin/phpcs -p --standard=PHPCompatibility src"
         ],
         "metrics": [
-            "vendor/bin/phpmetrics --report-html='./tests/_output/report' ./src"
+            "@php ./vendor/bin/phpmetrics --report-html='./tests/_output/report' ./src"
         ],
         "infection": [
             "@php ./vendor/bin/infection --threads=4"
@@ -82,7 +82,7 @@
             "@php ./vendor/bin/codecept run wpunit"
         ],
         "wpunit:coverage": [
-            "@php ./vendor/bin/codecept run wpunit --coverage-text"
+            "@wpunit --coverage-text"
         ],
         "wpunit:debug": [
             "@wpunit --debug"
@@ -91,7 +91,7 @@
             "@php ./vendor/bin/codecept run unit"
         ],
         "unit:coverage": [
-            "@php ./vendor/bin/codecept run unit --coverage-text"
+            "@unit --coverage-text"
         ],
         "unit:debug": [
             "@unit --debug"

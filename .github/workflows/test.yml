@@ -96,5 +96,5 @@ jobs:
         run: |
           ./vendor/bin/codecept run unit
           ./vendor/bin/codecept run wpunit
-          ls -la ${{env.APP_FOLDER_PATH}}/wp-content/${{env.PROJECT_KIND}}/${{env.REPOSITORY_NAME}}/tests/_output
+          ./vendor/bin/infection --threads=4
         working-directory: ${{env.APP_FOLDER_PATH}}/wp-content/${{env.PROJECT_KIND}}/${{env.REPOSITORY_NAME}}
