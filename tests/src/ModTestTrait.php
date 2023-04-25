@@ -79,4 +79,13 @@ trait ModTestTrait
         // Deleting a theme mod will always return true even if the mod doesn't exist
         $this->assertTrue($this->makeInstance()->deleteMultiple(['key1', 'key3']), '');
     }
+
+    /**
+     * @test
+     */
+    public function deleteFromEmptyKeyShouldReturnFalse()
+    {
+        $this->assertTrue($this->makeInstance()->delete(''), '');
+        $this->assertTrue($this->makeInstance()->deleteMultiple(['']), '');
+    }
 }

@@ -172,6 +172,7 @@ class TestCase extends Unit
         $this->store = [];
         $this->set_return_value = true;
         $this->delete_return_value = true;
+        $this->ttl = 0;
 //        $this->prophet->checkPredictions();
     }
 

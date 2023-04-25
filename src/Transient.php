@@ -43,7 +43,14 @@ class Transient implements CacheInterface
 
     public function delete(string $key): bool
     {
-        $this->assertKeyLength($key);
+        if (empty($key)) {
+            return false;
+        }
+
+        if (!$this->get($key)) {
+            return true;
+        }
+
         return \delete_transient($key);
     }
 }

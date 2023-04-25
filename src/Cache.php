@@ -50,6 +50,14 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 
     public function delete(string $key): bool
     {
+        if (empty($key)) {
+            return false;
+        }
+
+        if (!$this->get($key)) {
+            return true;
+        }
+
         return \wp_cache_delete($key, $this->group);
     }
 
@@ -112,10 +120,9 @@ class Cache implements CacheInterface, ClearableInterface, IncrDecrInterface
 
     public function deleteMultiple(iterable $keys): bool
     {
-        $newValues = $this->iteratorToArray($keys);
-        $result = \wp_cache_delete_multiple($newValues, $this->group);
-        foreach ($result as $value) {
-            if (!$value) {
+        /** @var string $key */
+        foreach ($keys as $key) {
+            if (!$this->delete($key)) {
                 return false;
             }
         }

@@ -87,6 +87,12 @@ It is a bad decision?
 I leave the decision to you :-D
 I think this method is not necessary, but I decided to leave it there for the sake of completeness.
 
+### The return value of the `Class::delete()` method
+
+As always in WordPress there is no real standard between API (f**k), and the `Class::delete()` method is another example about this.
+The `\remove_theme_mod()` is the only function that does not return anything, all the other functions return `true` if the value has been deleted or `false` if the value does not exist.
+Now, to make this more similar to the PSR-16 specification, the `Class::delete()` method return `true` if the value has been deleted and if the value does not exist, the only way to return a false value is to provide an empty string as the key.
+
 ## Basic Usage
 
 Remember that the maximum length of the key used for [transients](https://developer.wordpress.org/reference/functions/set_transient/) is <=172 characters, more characters will rise an Exception.

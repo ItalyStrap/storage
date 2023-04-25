@@ -108,10 +108,28 @@ trait CommonTrait
     /**
      * @test
      */
-    public function deleteMultipleReturnFalse()
+    public function deleteMultipleReturnTrueWithNotExistentValue()
     {
         $this->assertNull($this->makeInstance()->get('key1'));
         $this->assertNull($this->makeInstance()->get('key3'));
-        $this->assertFalse($this->makeInstance()->deleteMultiple(['key1', 'key3']), '');
+        $this->assertTrue($this->makeInstance()->deleteMultiple(['key1', 'key3']), '');
+    }
+
+    /**
+     * @test
+     * @todo In the future make this test pass
+     */
+    public function deleteNotExistingValue()
+    {
+        $this->assertTrue($this->makeInstance()->delete('key1'), '');
+    }
+
+    /**
+     * @test
+     */
+    public function deleteFromEmptyKeyShouldReturnFalse()
+    {
+        $this->assertFalse($this->makeInstance()->delete(''), '');
+        $this->assertFalse($this->makeInstance()->deleteMultiple(['']), '');
     }
 }

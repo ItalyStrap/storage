@@ -50,6 +50,14 @@ class Option implements StoreInterface
      */
     public function delete(string $key): bool
     {
+        if (empty($key)) {
+            return false;
+        }
+
+        if (!$this->get($key)) {
+            return true;
+        }
+
         return \delete_option($key);
     }
 }

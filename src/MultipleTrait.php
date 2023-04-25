@@ -34,10 +34,9 @@ trait MultipleTrait
     {
         /** @var string[] $keys */
         foreach ($keys as $key) {
-            if ($this->delete($key)) {
-                continue;
+            if (!$this->delete($key)) {
+                return false;
             }
-            return false;
         }
 
         return true;
