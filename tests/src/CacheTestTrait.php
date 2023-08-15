@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace ItalyStrap\Tests;
 
 use ItalyStrap\Storage\Cache;
+use ItalyStrap\StorageTests\CommonStoreMultipleTestsTrait;
 
 trait CacheTestTrait
 {
-    use NormalizeTtlTestTrait, CommonMultipleProviderTrait, CommonTrait;
+    use NormalizeTtlTestTrait, CommonStoreMultipleTestsTrait;
 
     /**
      * @test

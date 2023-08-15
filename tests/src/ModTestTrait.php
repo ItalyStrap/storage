@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace ItalyStrap\Tests;
 
 use ItalyStrap\Storage\Mod;
+use ItalyStrap\StorageTests\CommonStoreMultipleTestsTrait;
 
 trait ModTestTrait
 {
-    use CommonTrait;
+    use CommonStoreMultipleTestsTrait;
 
     /**
      * @test

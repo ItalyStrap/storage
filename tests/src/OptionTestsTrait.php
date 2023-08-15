@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace ItalyStrap\Tests;
 
+use ItalyStrap\StorageTests\CommonStoreMultipleTestsTrait;
+
 trait OptionTestsTrait
 {
-    use CommonTrait;
+    use CommonStoreMultipleTestsTrait;
 
     /**
      * @test

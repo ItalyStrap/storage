@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace ItalyStrap\Tests;
 
 use ItalyStrap\Storage\Transient;
+use ItalyStrap\StorageTests\CommonStoreMultipleTestsTrait;
 
 trait TransientTestsTrait
 {
-    use ValidateKeyLenghtTestTrait, NormalizeTtlTestTrait, CommonMultipleProviderTrait, CommonTrait;
+    use ValidateKeyLenghtTestTrait, NormalizeTtlTestTrait, CommonStoreMultipleTestsTrait;
 
     /**
      * @test
