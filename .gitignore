@@ -1,3 +1,6 @@
+## Docker
+.docker/
+
 ## Composer
 /vendor/
 *.lock
